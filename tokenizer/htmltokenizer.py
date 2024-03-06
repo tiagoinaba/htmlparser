@@ -37,6 +37,7 @@ class HtmlTokenizer(object):
                 tok = Token(TokenType.SLASH, self.source[self.currentIndex:self.nextIndex])
             case _:
                 if not self.inBrackets:
+                    # Early return so we don't call self.advance() twice
                     tok = self.readString()
                     return tok
                 if self.char.isalpha():
