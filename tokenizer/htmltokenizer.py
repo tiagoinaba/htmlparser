@@ -18,9 +18,12 @@ class HtmlTokenizer(object):
     def readTokens(self) -> List[Token]:
         while self.char != '':
             tok = self.readToken()
-            if len(self.tokens) > 0 and tok.type == TokenType.STRING and self.tokens[-1].type == TokenType.STRING:
-                self.tokens[-1].literal += tok.literal
-                continue
+            if tok.type == TokenType.STRING:
+                if len(tok.literal) == 0:
+                    continue
+                if len(self.tokens) > 0 and self.tokens[-1].type == TokenType.STRING:
+                    self.tokens[-1].literal += tok.literal
+                    continue
             self.tokens.append(tok)
         self.tokens.append(Token(TokenType.EOF, ''))
         return self.tokens
@@ -28,6 +31,9 @@ class HtmlTokenizer(object):
     def readToken(self) -> Token:
         tok = None
         match self.char:
+            case "\n" | "\t":
+                self.skipWhitespace()
+                return self.readToken()
             case "<":
                 tok = self.readTag()
             case _:
@@ -52,7 +58,15 @@ class HtmlTokenizer(object):
             start = self.currentIndex
         while self.char != '<' and self.char != '':
             self.advance()
+            if self.char in ("\n", "\t"):
+                end = self.currentIndex
+                self.skipWhitespace()
+                return Token(TokenType.STRING, self.source[start:end] + " ")
         return Token(TokenType.STRING, self.source[start:self.currentIndex])
+
+    def skipWhitespace(self):
+        while self.char in ("\n", "\t", " "):
+            self.advance()
 
     def peek(self) -> str:
         if self.nextIndex < len(self.source):

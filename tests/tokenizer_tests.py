@@ -64,3 +64,23 @@ class ParserTests(unittest.TestCase):
         shouldBe.append(tokens.Token(tokens.TokenType.H1C, "</h1>"))
         shouldBe.append(tokens.Token(tokens.TokenType.EOF, ""))
         self.assertListEqual(toks, shouldBe)
+
+    def test_whitespace(self):
+        h = htmltokenizer.HtmlTokenizer(source="""
+                                        <h1>
+                                            hello
+                                            <h2>teste</h2>
+                                            world
+                                        </h1>
+                                        """)
+        toks = h.readTokens()
+        shouldBe = list()
+        shouldBe.append(tokens.Token(tokens.TokenType.H1, "<h1>"))
+        shouldBe.append(tokens.Token(tokens.TokenType.STRING, "hello "))
+        shouldBe.append(tokens.Token(tokens.TokenType.H2, "<h2>"))
+        shouldBe.append(tokens.Token(tokens.TokenType.STRING, "teste"))
+        shouldBe.append(tokens.Token(tokens.TokenType.H2C, "</h2>"))
+        shouldBe.append(tokens.Token(tokens.TokenType.STRING, "world "))
+        shouldBe.append(tokens.Token(tokens.TokenType.H1C, "</h1>"))
+        shouldBe.append(tokens.Token(tokens.TokenType.EOF, ""))
+        self.assertListEqual(toks, shouldBe)
