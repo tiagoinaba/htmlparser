@@ -14,6 +14,14 @@ class ParserTests(unittest.TestCase):
         shouldBe.append(tokens.Token(tokens.TokenType.EOF, ""))
         self.assertListEqual(toks, shouldBe)
 
+    def test_no_tags(self):
+        h = htmltokenizer.HtmlTokenizer(source="hijk")
+        toks = h.readTokens()
+        shouldBe = list()
+        shouldBe.append(tokens.Token(tokens.TokenType.STRING, "hijk"))
+        shouldBe.append(tokens.Token(tokens.TokenType.EOF, ""))
+        self.assertListEqual(toks, shouldBe)
+
     def test_char_list(self):
         h = htmltokenizer.HtmlTokenizer(source="<hijk>")
         toks = h.readTokens()
