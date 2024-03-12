@@ -27,6 +27,7 @@ tokDict: Dict[TokenType, str] = {
     TokenType.H2C: "</h2>",
     TokenType.H3C: "</h3>",
     TokenType.PC:  "</p>",
+    TokenType.ROOT:  "ROOT",
 }
 
 keywords: Dict[str, TokenType] = {

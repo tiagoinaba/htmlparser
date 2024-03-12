@@ -17,5 +17,8 @@ from tknotes.parser.htmlparser import HtmlParser
 #
 #root.mainloop()
 #h = HtmlTokenizer(source="<h1>hello world</h1>")
-h = HtmlTokenizer(source="hello world")
+h = HtmlTokenizer(source="<h1>Hello <h2>world</h2> hehe</h1>")
 tokens = h.readTokens()
+p = HtmlParser(tokens)
+tree = p.buildTree()
+print(tree)
