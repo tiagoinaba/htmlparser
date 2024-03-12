@@ -2,29 +2,46 @@ from enum import Enum
 from typing import Dict
 
 class TokenType(Enum):
-    LANGLEBRACKET   = 1
-    RANGLEBRACKET   = 2
-    IDENTIFIER      = 3
-    SLASH           = 4
-    EOF             = 5
-    STRING          = 6
-    H1              = 7
-    H2              = 8
-    H3              = 9
-    P               = 10
+    IDENTIFIER      = 1
+    EOF             = 2
+    STRING          = 3
+    H1              = 4
+    H2              = 5
+    H3              = 6
+    P               = 7
+    H1C             = 8
+    H2C             = 9
+    H3C             = 10
+    PC              = 11
+    ROOT            = 12
 
 tokDict: Dict[TokenType, str] = {
-    TokenType.LANGLEBRACKET: "LANGLEBRACKET",
-    TokenType.RANGLEBRACKET: "RANGLEBRACKET",
     TokenType.IDENTIFIER: "IDENTIFIER",
-    TokenType.SLASH: "SLASH",
     TokenType.EOF: "EOF",
     TokenType.STRING: "STRING",
-    TokenType.H1: "h1",
-    TokenType.H2: "h2",
-    TokenType.H3: "h3",
-    TokenType.P: "p",
+    TokenType.H1: "<h1>",
+    TokenType.H2: "<h2>",
+    TokenType.H3: "<h3>",
+    TokenType.P:  "<p>",
+    TokenType.H1C: "</h1>",
+    TokenType.H2C: "</h2>",
+    TokenType.H3C: "</h3>",
+    TokenType.PC:  "</p>",
 }
+
+keywords: Dict[str, TokenType] = {
+     "<h1>":  TokenType.H1,
+     "<h2>":  TokenType.H2,
+     "<h3>":  TokenType.H3,
+     "<p>":   TokenType.P,
+     "</h1>": TokenType.H1C,
+     "</h2>": TokenType.H2C,
+     "</h3>": TokenType.H3C,
+     "</p>":  TokenType.PC,
+}
+
+def getTokenType(literal: str) -> TokenType:
+    return keywords.get(literal, TokenType.STRING)
 
 class Token(object):
     type: TokenType
