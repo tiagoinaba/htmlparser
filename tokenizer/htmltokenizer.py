@@ -1,5 +1,4 @@
 from tknotes.tokenizer.tokens import TokenType, getTokenType, Token
-from tknotes.errors.errors import UnexpectedCharError
 from typing import List
 
 class HtmlTokenizer(object):
@@ -51,7 +50,7 @@ class HtmlTokenizer(object):
     def readString(self, start = -1) -> Token:
         if start < 0:
             start = self.currentIndex
-        while self.char != '<' and self.currentIndex < len(self.source) - 1:
+        while self.char != '<' and self.char != '':
             self.advance()
         return Token(TokenType.STRING, self.source[start:self.currentIndex])
 

@@ -27,6 +27,7 @@ tokDict: Dict[TokenType, str] = {
     TokenType.H2C: "</h2>",
     TokenType.H3C: "</h3>",
     TokenType.PC:  "</p>",
+    TokenType.ROOT:  "ROOT",
 }
 
 keywords: Dict[str, TokenType] = {
@@ -39,6 +40,14 @@ keywords: Dict[str, TokenType] = {
      "</h3>": TokenType.H3C,
      "</p>":  TokenType.PC,
 }
+
+closingTags: Dict[TokenType, TokenType] = {
+        TokenType.H1: TokenType.H1C,
+        TokenType.H2: TokenType.H2C,
+        TokenType.H3: TokenType.H3C,
+        TokenType.P: TokenType.PC,
+        TokenType.ROOT: TokenType.EOF,
+        }
 
 def getTokenType(literal: str) -> TokenType:
     return keywords.get(literal, TokenType.STRING)
