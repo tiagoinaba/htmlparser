@@ -5,6 +5,8 @@ from tknotes.tokenizer.htmltokenizer import TokenType
 from tknotes.parser.htmlparser import HtmlNode, HtmlParser
 from tknotes.parser.prop import Prop
 
+from tknotes.errors.parser_error import UnknownPropError
+
 class ParserTests(unittest.TestCase):
     def test_hello_world(self):
         h = HtmlTokenizer(source="<h1>Hello world</h1>")
@@ -72,6 +74,16 @@ class ParserTests(unittest.TestCase):
         h2.props.append(Prop("color", "red"))
         h1.children.append(HtmlNode(TokenType.STRING, " hehe"))
         shouldBe.children.append(h1)
-        print(root)
-        print(shouldBe)
         self.assertEqual(root, shouldBe)
+
+    def test_unknown_prop_error(self):
+        h = HtmlTokenizer(source="<h1 balls=\"2\">Hello <h2>world</h2> hehe</h1>")
+        toks = h.readTokens()
+        p = HtmlParser(toks)
+        self.assertRaises(UnknownPropError, p.buildTree)
+
+    def test_unknown_prop_value_error(self):
+        h = HtmlTokenizer(source="<h1 balls=\"2\">Hello <h2>world</h2> hehe</h1>")
+        toks = h.readTokens()
+        p = HtmlParser(toks)
+        self.assertRaises(UnknownPropError, p.buildTree)
