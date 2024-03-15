@@ -62,13 +62,13 @@ class HtmlParser(object):
                 if self.currentToken.type == TokenType.PROP:
                     prop = Prop(key=self.currentToken.literal)
                     if self.peek().type != TokenType.EQ:
-                        prop.value = True
+                        prop.value = "True"
                     else:
                         self.advance()
                         if self.peek().type != TokenType.VALUE:
                             raise ExpectedValueError("Expected value after prop")
                         self.advance()
-                        prop.value = self.currentToken.literal.strip('"')
+                        prop.setValue(self.currentToken.literal.strip('"'))
                         currentNode.props.append(prop)
                         self.advance()
                     continue
