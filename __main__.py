@@ -1,5 +1,3 @@
-import tkinter as tk
-from tkinter import font
 from tknotes.tokenizer.htmltokenizer import HtmlTokenizer
 from tknotes.parser.htmlparser import HtmlParser
 from tknotes.app import App
