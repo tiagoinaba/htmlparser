@@ -9,9 +9,9 @@ h = HtmlTokenizer(source="""
                                 testetestestetstes
                                 aaaaaaaaaaaaaa
                                 teste
-                                    <h2>world</h2>
                                 oi eu sou o kiyoshi
                             </h1>
+                            <h2>world</h2>
                             <p>
                                 testetestestetstes
                             </p>
