@@ -1,4 +1,6 @@
 import sys
+
+from tknotes.errors.errors import UnexpectedCharError
 sys.path.append("/home/tkinaba/Documents/Github/py/tknotes")
 import unittest
 
@@ -43,13 +45,7 @@ class ParserTests(unittest.TestCase):
     # Test string with angle bracket
     def test_string_with_ab(self):
         h = htmltokenizer.HtmlTokenizer(source="<h1>hello < world</h1>")
-        toks = h.readTokens()
-        shouldBe = list()
-        shouldBe.append(tokens.Token(tokens.TokenType.H1, "<h1>"))
-        shouldBe.append(tokens.Token(tokens.TokenType.STRING, "hello < world"))
-        shouldBe.append(tokens.Token(tokens.TokenType.H1C, "</h1>"))
-        shouldBe.append(tokens.Token(tokens.TokenType.EOF, ""))
-        self.assertListEqual(toks, shouldBe)
+        self.assertRaises(UnexpectedCharError, lambda: h.readTokens())
 
     def test_nested_tags(self):
         h = htmltokenizer.HtmlTokenizer(source="<h1>hello<h2>teste</h2>world</h1>")
@@ -61,6 +57,50 @@ class ParserTests(unittest.TestCase):
         shouldBe.append(tokens.Token(tokens.TokenType.STRING, "teste"))
         shouldBe.append(tokens.Token(tokens.TokenType.H2C, "</h2>"))
         shouldBe.append(tokens.Token(tokens.TokenType.STRING, "world"))
+        shouldBe.append(tokens.Token(tokens.TokenType.H1C, "</h1>"))
+        shouldBe.append(tokens.Token(tokens.TokenType.EOF, ""))
+        self.assertListEqual(toks, shouldBe)
+
+    def test_whitespace(self):
+        h = htmltokenizer.HtmlTokenizer(source="""
+                                        <h1>
+                                            hello
+                                            aaaaa
+                                            <h2>teste</h2>
+                                            world
+                                        </h1>
+                                        """)
+        toks = h.readTokens()
+        shouldBe = list()
+        shouldBe.append(tokens.Token(tokens.TokenType.H1, "<h1>"))
+        shouldBe.append(tokens.Token(tokens.TokenType.STRING, "hello aaaaa "))
+        shouldBe.append(tokens.Token(tokens.TokenType.H2, "<h2>"))
+        shouldBe.append(tokens.Token(tokens.TokenType.STRING, "teste"))
+        shouldBe.append(tokens.Token(tokens.TokenType.H2C, "</h2>"))
+        shouldBe.append(tokens.Token(tokens.TokenType.STRING, "world "))
+        shouldBe.append(tokens.Token(tokens.TokenType.H1C, "</h1>"))
+        shouldBe.append(tokens.Token(tokens.TokenType.EOF, ""))
+        self.assertListEqual(toks, shouldBe)
+
+    def test_tag_with_space(self):
+        h = htmltokenizer.HtmlTokenizer(source="< h1>tesstetete</h1>")
+        toks = h.readTokens()
+        shouldBe = list()
+        shouldBe.append(tokens.Token(tokens.TokenType.H1, "<h1>"))
+        shouldBe.append(tokens.Token(tokens.TokenType.STRING, "tesstetete"))
+        shouldBe.append(tokens.Token(tokens.TokenType.H1C, "</h1>"))
+        shouldBe.append(tokens.Token(tokens.TokenType.EOF, ""))
+        self.assertListEqual(toks, shouldBe)
+
+    def test_props(self):
+        h = htmltokenizer.HtmlTokenizer(source="""<h1 color="white">tesstetete</h1>""")
+        toks = h.readTokens()
+        shouldBe = list()
+        shouldBe.append(tokens.Token(tokens.TokenType.H1, "<h1 "))
+        shouldBe.append(tokens.Token(tokens.TokenType.PROP, "color"))
+        shouldBe.append(tokens.Token(tokens.TokenType.EQ, "="))
+        shouldBe.append(tokens.Token(tokens.TokenType.VALUE, "\"white\""))
+        shouldBe.append(tokens.Token(tokens.TokenType.STRING, "tesstetete"))
         shouldBe.append(tokens.Token(tokens.TokenType.H1C, "</h1>"))
         shouldBe.append(tokens.Token(tokens.TokenType.EOF, ""))
         self.assertListEqual(toks, shouldBe)

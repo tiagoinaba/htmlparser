@@ -1,17 +1,27 @@
+from __future__ import annotations
 from typing import List
 from tknotes.tokenizer.tokens import TokenType, tokDict, Token, closingTags
+from tknotes.parser.prop import Prop
+from tknotes.errors.parser_error import ExpectedValueError
 
 class HtmlNode(object):
     type: TokenType
+    props: List[Prop]
     innerText: str
+    children: List[HtmlNode]
+
     def __init__(self, type: TokenType, innerText: str = ""):
         self.type = type
         self.children = []
+        self.props = []
         self.innerText = innerText
 
     def __eq__(self, other) -> bool:
         if isinstance(other, HtmlNode):
-            return self.type == other.type and self.innerText == other.innerText and self.children == other.children
+            return self.type == other.type \
+                    and self.innerText == other.innerText \
+                    and self.children == other.children \
+                    and self.props == other.props
         return False
 
     def __repr__(self) -> str:
@@ -21,7 +31,8 @@ class HtmlNode(object):
                     + "'}"
         else:
             return "HtmlNode{" + tokDict[self.type] \
-                    + ", children=" + self.children.__repr__() + "}"
+                    + ", children=" + self.children.__repr__() + ", props=" + \
+                    self.props.__repr__() + "}"
 
 class HtmlParser(object):
     tokens: List[Token]
@@ -48,6 +59,19 @@ class HtmlParser(object):
         self.advance()
         while self.currentToken.type != TokenType.EOF and self.currentToken.type != closingTags[currentNode.type]:
             if self.currentToken.type != TokenType.STRING:
+                if self.currentToken.type == TokenType.PROP:
+                    prop = Prop(key=self.currentToken.literal)
+                    if self.peek().type != TokenType.EQ:
+                        prop.value = True
+                    else:
+                        self.advance()
+                        if self.peek().type != TokenType.VALUE:
+                            raise ExpectedValueError("Expected value after prop")
+                        self.advance()
+                        prop.value = self.currentToken.literal.strip('"')
+                        currentNode.props.append(prop)
+                        self.advance()
+                    continue
                 self.readNode(currentNode)
                 continue
             else:
@@ -57,6 +81,9 @@ class HtmlParser(object):
 
     def addNode(self, parentNode: HtmlNode, node: HtmlNode):
         parentNode.children.append(node)
+
+    def peek(self) -> Token:
+        return self.tokens[self.current + 1]
 
     def advance(self):
         if self.current < len(self.tokens) - 1:

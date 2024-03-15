@@ -1,24 +1,28 @@
-from enum import Enum
+from enum import Enum, auto
 from typing import Dict
 
 class TokenType(Enum):
-    IDENTIFIER      = 1
-    EOF             = 2
-    STRING          = 3
-    H1              = 4
-    H2              = 5
-    H3              = 6
-    P               = 7
-    H1C             = 8
-    H2C             = 9
-    H3C             = 10
-    PC              = 11
-    ROOT            = 12
+    IDENTIFIER      = auto()
+    EOF             = auto()
+    STRING          = auto()
+    VALUE           = auto()
+    H1              = auto()
+    H2              = auto()
+    H3              = auto()
+    P               = auto()
+    H1C             = auto()
+    H2C             = auto()
+    H3C             = auto()
+    PC              = auto()
+    PROP            = auto()
+    EQ              = auto()
+    ROOT            = auto()
 
 tokDict: Dict[TokenType, str] = {
     TokenType.IDENTIFIER: "IDENTIFIER",
     TokenType.EOF: "EOF",
     TokenType.STRING: "STRING",
+    TokenType.VALUE: "VALUE",
     TokenType.H1: "<h1>",
     TokenType.H2: "<h2>",
     TokenType.H3: "<h3>",
@@ -27,14 +31,20 @@ tokDict: Dict[TokenType, str] = {
     TokenType.H2C: "</h2>",
     TokenType.H3C: "</h3>",
     TokenType.PC:  "</p>",
+    TokenType.PROP:  "PROP",
     TokenType.ROOT:  "ROOT",
+    TokenType.EQ:  "EQ",
 }
 
 keywords: Dict[str, TokenType] = {
      "<h1>":  TokenType.H1,
+     "<h1 ":  TokenType.H1,
      "<h2>":  TokenType.H2,
+     "<h2 ":  TokenType.H2,
      "<h3>":  TokenType.H3,
+     "<h3 ":  TokenType.H3,
      "<p>":   TokenType.P,
+     "<p ":   TokenType.P,
      "</h1>": TokenType.H1C,
      "</h2>": TokenType.H2C,
      "</h3>": TokenType.H3C,
