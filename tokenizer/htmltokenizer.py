@@ -46,6 +46,8 @@ class HtmlTokenizer(object):
                 tok = self.readTag()
             case _:
                 if self.inBrackets:
+                    if self.char == ' ':
+                        self.eatWhitespace()
                     tok = self.readProp()
                 else:
                     tok = self.readString()
