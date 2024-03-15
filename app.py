@@ -21,7 +21,6 @@ propDict = {
         }
 
 class App(object):
-    styles: Dict[str, Any]
     fonts: Dict[availableFonts, font.Font]
     currentNode: HtmlNode
 
@@ -45,8 +44,7 @@ class App(object):
     def tokenTypeToFont(self, tokenType: TokenType):
         return self.fonts[tokenTypeToFont[tokenType]]
 
-    def readTree(self, parent: HtmlNode):
-        styles: Dict = dict(defaultStyles)
+    def readTree(self, parent: HtmlNode, styles: Dict = dict(defaultStyles)):
         for prop in parent.props:
             styles[propDict[prop.key]] = prop.value
         for node in parent.children:
@@ -56,4 +54,4 @@ class App(object):
                 e.pack(fill="x")
                 e.configure(state="readonly")
             else:
-                self.readTree(node)
+                self.readTree(node, dict(styles))
