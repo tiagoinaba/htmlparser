@@ -14,10 +14,15 @@ tokenTypeToFont: Dict[TokenType, availableFonts] = {
                                                     }
 availableProps = Literal["background", "color"]
 
-defaultStyles = { "readonlybackground": "white", "foreground": "black" }
+defaultStyles = { "background": "white", "foreground": "black" }
 propDict = {
-        "background": "readonlybackground",
+        "background": "background",
         "color": "foreground"
+        }
+
+tagDict = {
+        "background": "bg-",
+        "color": "text-"
         }
 
 class App(object):
@@ -52,12 +57,18 @@ class App(object):
     def tokenTypeToFont(self, tokenType: TokenType):
         return self.fonts[tokenTypeToFont[tokenType]]
 
-    def readTree(self, parent: HtmlNode, styles: Dict = dict(defaultStyles)):
+    def readTree(self, parent: HtmlNode, tags = []):
         for prop in parent.props:
-            styles[propDict[prop.key]] = prop.value
+            tag = tagDict[prop.key] + prop.value
+            tagStyle = {
+                    propDict[prop.key]: prop.value
+                    }
+            self.t.tag_configure(tag, **tagStyle)
+            tags.append(tag)
         for node in parent.children:
             if node.type == TokenType.STRING:
-                self.t.insert(END, node.innerText + '\n', tokDict[parent.type])
+                tags.append(tokDict[parent.type])
+                self.t.insert(END, node.innerText + '\n', tags)
                 self.t.pack(fill="both")
             else:
-                self.readTree(node, dict(styles))
+                self.readTree(node, list(tags))
