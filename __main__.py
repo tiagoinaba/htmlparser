@@ -1,17 +1,16 @@
-from tknotes.tokenizer.htmltokenizer import HtmlTokenizer
-from tknotes.parser.htmlparser import HtmlParser
-from tknotes.app import App
+from tokenizer.htmltokenizer import HtmlTokenizer
+from parser.htmlparser import HtmlParser
+from app import App
 
 h = HtmlTokenizer(source="""
                             <h1 background="red" color="white">
-                                testetestestetstes
-                                aaaaaaaaaaaaaa
-                                teste
-                                oi eu sou o kiyoshi
+                                h1
+                                <p>teste</p>
                             </h1>
-                            <h2>world</h2>
+                            <h2>h2</h2>
+                            <h3>h3</h3>
                             <p>
-                                testetestestetstes
+                                p
                             </p>
                             """)
 tokens = h.readTokens()

@@ -1,8 +1,8 @@
 from __future__ import annotations
 from typing import List
-from tknotes.tokenizer.tokens import TokenType, tokDict, Token, closingTags
-from tknotes.parser.prop import Prop
-from tknotes.errors.parser_error import ExpectedValueError
+from tokenizer.tokens import TokenType, tokDict, Token, closingTags
+from parser.prop import Prop
+from errors.parser_error import ExpectedValueError
 
 class HtmlNode(object):
     type: TokenType

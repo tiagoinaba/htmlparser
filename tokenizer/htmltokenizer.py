@@ -1,5 +1,5 @@
-from tknotes.tokenizer.tokens import TokenType, getTokenType, Token
-from tknotes.errors.errors import UnclosedAngledBracket, UnexpectedCharError
+from tokenizer.tokens import TokenType, getTokenType, Token
+from errors.errors import UnclosedAngledBracket, UnexpectedCharError
 from typing import List
 
 class HtmlTokenizer(object):

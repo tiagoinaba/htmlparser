@@ -1,11 +1,11 @@
 import sys
-
-from tknotes.errors.errors import UnexpectedCharError
 sys.path.append("/home/tkinaba/Documents/Github/py/tknotes")
 import unittest
 
-from tknotes.tokenizer import tokens
-from tknotes.tokenizer import htmltokenizer
+from errors.errors import UnexpectedCharError
+
+from tokenizer import tokens
+from tokenizer import htmltokenizer
 
 class ParserTests(unittest.TestCase):
     def test_single_char_id(self):
