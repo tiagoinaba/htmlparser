@@ -1,6 +1,6 @@
-from tokenizer.htmltokenizer import HtmlTokenizer
-from parser.htmlparser import HtmlParser
-from app import App
+from htmlparser.tokenizer.htmltokenizer import HtmlTokenizer
+from htmlparser.parser.parser import HtmlParser
+from htmlparser.app import App
 
 h = HtmlTokenizer(source="""
                             <h1 background="red" color="white">

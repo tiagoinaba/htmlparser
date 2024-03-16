@@ -2,8 +2,8 @@ import tkinter as tk
 from tkinter import END, Text, font
 from typing import Dict, Literal
 
-from parser.htmlparser import HtmlNode
-from tokenizer.tokens import TokenType, tokDict
+from htmlparser.parser.parser import HtmlNode
+from htmlparser.tokenizer.tokens import TokenType, tokDict
 
 availableFonts = Literal["h1", "h2", "h3", "p"]
 tokenTypeToFont: Dict[TokenType, availableFonts] = { 

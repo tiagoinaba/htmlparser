@@ -1,8 +1,8 @@
 from __future__ import annotations
 from typing import List
-from tokenizer.tokens import TokenType, tokDict, Token, closingTags
-from parser.prop import Prop
-from errors.parser_error import ExpectedValueError
+from htmlparser.tokenizer.tokens import TokenType, tokDict, Token, closingTags
+from htmlparser.parser.prop import Prop
+from htmlparser.errors.parser_error import ExpectedValueError
 
 class HtmlNode(object):
     type: TokenType

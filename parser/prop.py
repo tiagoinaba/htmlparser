@@ -1,4 +1,4 @@
-from errors.parser_error import UnknownPropError, UnknownPropValueError
+from htmlparser.errors.parser_error import UnknownPropError, UnknownPropValueError
 
 KNOWN_PROPS = ["background", "color"]
 KNOWN_PROP_VALUES = {

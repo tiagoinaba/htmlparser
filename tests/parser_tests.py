@@ -1,11 +1,11 @@
 import unittest
 
-from tokenizer.htmltokenizer import HtmlTokenizer
-from tokenizer.htmltokenizer import TokenType
-from parser.htmlparser import HtmlNode, HtmlParser
-from parser.prop import Prop
+from htmlparser.tokenizer.htmltokenizer import HtmlTokenizer
+from htmlparser.tokenizer.htmltokenizer import TokenType
+from htmlparser.parser.parser import HtmlNode, HtmlParser
+from htmlparser.parser.prop import Prop
 
-from errors.parser_error import UnknownPropError
+from htmlparser.errors.parser_error import UnknownPropError
 
 class ParserTests(unittest.TestCase):
     def test_hello_world(self):
