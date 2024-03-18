@@ -14,6 +14,8 @@ class TokenType(Enum):
     H2C             = auto()
     H3C             = auto()
     PC              = auto()
+    CODE            = auto()
+    CODEC           = auto()
     PROP            = auto()
     EQ              = auto()
     ROOT            = auto()
@@ -27,9 +29,11 @@ tokDict: Dict[TokenType, str] = {
     TokenType.H2: "<h2>",
     TokenType.H3: "<h3>",
     TokenType.P:  "<p>",
+    TokenType.CODE:  "<code>",
     TokenType.H1C: "</h1>",
     TokenType.H2C: "</h2>",
     TokenType.H3C: "</h3>",
+    TokenType.CODEC:  "</code>",
     TokenType.PC:  "</p>",
     TokenType.PROP:  "PROP",
     TokenType.ROOT:  "ROOT",
@@ -45,10 +49,13 @@ keywords: Dict[str, TokenType] = {
      "<h3 ":  TokenType.H3,
      "<p>":   TokenType.P,
      "<p ":   TokenType.P,
+     "<code>":   TokenType.CODE,
+     "<code ":   TokenType.CODE,
      "</h1>": TokenType.H1C,
      "</h2>": TokenType.H2C,
      "</h3>": TokenType.H3C,
      "</p>":  TokenType.PC,
+     "</code>": TokenType.CODEC
 }
 
 closingTags: Dict[TokenType, TokenType] = {
@@ -56,6 +63,7 @@ closingTags: Dict[TokenType, TokenType] = {
         TokenType.H2: TokenType.H2C,
         TokenType.H3: TokenType.H3C,
         TokenType.P: TokenType.PC,
+        TokenType.CODE: TokenType.CODEC,
         TokenType.ROOT: TokenType.EOF,
         }
 
@@ -74,7 +82,7 @@ class Token(object):
         return "Token{" + tokDict[self.type] + ", '" + self.literal + "'}"
 
     def __repr__(self) -> str:
-        return "Token{" + tokDict[self.type] + ", '" + self.literal + "'}"
+        return "Token{" + tokDict[self.type] + ", '" + self.literal.__repr__() + "'}"
 
     def __eq__(self, other) -> bool:
         return self.type == other.type and self.literal == other.literal

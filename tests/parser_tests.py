@@ -87,3 +87,22 @@ class ParserTests(unittest.TestCase):
         toks = h.readTokens()
         p = HtmlParser(toks)
         self.assertRaises(UnknownPropError, p.buildTree)
+
+    def test_code_tag(self):
+        h = HtmlTokenizer(source="""
+<code>
+    def teste(param):
+        print("hello world")
+</code>
+                                        """)
+        toks = h.readTokens()
+        p = HtmlParser(toks)
+        tree = p.buildTree()
+        shouldBe = HtmlNode(TokenType.ROOT)
+        code = HtmlNode(TokenType.CODE, "<code>")
+        code.children.append(HtmlNode(TokenType.STRING, """
+    def teste(param):
+        print("hello world")
+"""))
+        shouldBe.children.append(code)
+        self.assertEqual(tree, shouldBe)

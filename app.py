@@ -1,16 +1,18 @@
 import tkinter as tk
 from tkinter import END, Text, font
+from tkinter.constants import CENTER
 from typing import Dict, Literal
 
 from htmlparser.parser.parser import HtmlNode
 from htmlparser.tokenizer.tokens import TokenType, tokDict
 
-availableFonts = Literal["h1", "h2", "h3", "p"]
+availableFonts = Literal["h1", "h2", "h3", "p", "code"]
 tokenTypeToFont: Dict[TokenType, availableFonts] = { 
                                                     TokenType.H1: "h1",
                                                     TokenType.H2: "h2",
                                                     TokenType.H3: "h3",
                                                     TokenType.P: "p",
+                                                    TokenType.CODE: "code",
                                                     }
 availableProps = Literal["background", "color"]
 
@@ -37,20 +39,24 @@ class App(object):
         self.currentNode = tree
 
         self.fonts = {}
-        self.fonts["h1"] = font.Font(self.root, font=("JetBrains Mono", 28, "bold"))
-        self.fonts["h2"] = font.Font(self.root, font=("JetBrains Mono", 24, "bold"))
-        self.fonts["h3"] = font.Font(self.root, font=("JetBrains Mono", 20, "bold"))
-        self.fonts["p"] = font.Font(self.root, font=("JetBrains Mono", 16))
+        self.fonts["h1"] = font.Font(self.root, font=("FreeSerif", 28, "bold"))
+        self.fonts["h2"] = font.Font(self.root, font=("FreeSerif", 24, "bold"))
+        self.fonts["h3"] = font.Font(self.root, font=("FreeSerif", 20, "bold"))
+        self.fonts["p"] = font.Font(self.root, font=("FreeSerif", 16))
+        self.fonts["code"] = font.Font(self.root, font=("JetBrains Mono", 16))
 
         self.t = Text(self.root, cursor="arrow", wrap='word', borderwidth=0, highlightthickness=0, background="white")
 
         self.readTree(tree)
 
-        self.t.tag_configure("<h1>", font=self.fonts["h1"])
+        self.t.tag_configure("pad", font=self.fonts["h1"])
+        self.t.tag_configure("<h1>", font=self.fonts["h1"], justify=CENTER)
         self.t.tag_configure("<h2>", font=self.fonts["h2"])
         self.t.tag_configure("<h3>", font=self.fonts["h3"])
         self.t.tag_configure("<p>", font=self.fonts["p"])
+        self.t.tag_configure("<code>", font=self.fonts["code"], background="#F5F5DC")
         self.t.configure(state="disabled")
+        self.t.pack(fill="both")
 
         self.root.mainloop()
 
@@ -69,6 +75,6 @@ class App(object):
             if node.type == TokenType.STRING:
                 tags.append(tokDict[parent.type])
                 self.t.insert(END, node.innerText + '\n', tags)
-                self.t.pack(fill="both")
+                self.t.insert(END, '\n', "pad")
             else:
                 self.readTree(node, list(tags))
