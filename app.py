@@ -1,10 +1,13 @@
 import tkinter as tk
-from tkinter import END, Text, font
+from tkinter import END, INSERT, font
 from tkinter.constants import CENTER
 from typing import Dict, Literal
 
 from htmlparser.parser.parser import HtmlNode
 from htmlparser.tokenizer.tokens import TokenType, tokDict
+from htmlparser.widgets.DynamicText import DynamicText
+
+from widgets.ScrollingFrame import ScrollingFrame
 
 availableFonts = Literal["h1", "h2", "h3", "p", "code"]
 tokenTypeToFont: Dict[TokenType, availableFonts] = { 
@@ -34,7 +37,6 @@ class App(object):
     def __init__(self, tree: HtmlNode):
         self.root = tk.Tk()
         self.root.title("tknotes")
-        self.root.configure(bg="white", padx=30, pady=30)
 
         self.currentNode = tree
 
@@ -45,18 +47,23 @@ class App(object):
         self.fonts["p"] = font.Font(self.root, font=("FreeSerif", 16))
         self.fonts["code"] = font.Font(self.root, font=("JetBrains Mono", 16))
 
-        self.t = Text(self.root, cursor="arrow", wrap='word', borderwidth=0, highlightthickness=0, background="white")
-
-        self.readTree(tree)
+        self.main_frame = ScrollingFrame(self.root)
+        self.t = DynamicText(self.main_frame, cursor="arrow", wrap='word', \
+                    borderwidth=0, highlightthickness=0, background="white", padx=30, pady=30, height=4)
 
         self.t.tag_configure("pad", font=self.fonts["h1"])
         self.t.tag_configure("<h1>", font=self.fonts["h1"], justify=CENTER)
         self.t.tag_configure("<h2>", font=self.fonts["h2"])
         self.t.tag_configure("<h3>", font=self.fonts["h3"])
         self.t.tag_configure("<p>", font=self.fonts["p"])
-        self.t.tag_configure("<code>", font=self.fonts["code"], background="#F5F5DC")
+        self.t.tag_configure("<code>", font=self.fonts["code"], background="#D9D9C1", lmargin1=50)
+
+        self.t.pack(side="top", fill="both", expand=True)
+        self.root.update_idletasks()
+
+        self.readTree(tree)
+
         self.t.configure(state="disabled")
-        self.t.pack(fill="both")
 
         self.root.mainloop()
 
@@ -74,7 +81,7 @@ class App(object):
         for node in parent.children:
             if node.type == TokenType.STRING:
                 tags.append(tokDict[parent.type])
-                self.t.insert(END, node.innerText + '\n', tags)
-                self.t.insert(END, '\n', "pad")
+                self.t.insert(INSERT, node.innerText + '\n', tags)
+                self.t.insert(INSERT, '\n', ["pad"])
             else:
                 self.readTree(node, list(tags))

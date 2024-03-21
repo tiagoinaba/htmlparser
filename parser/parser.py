@@ -75,7 +75,10 @@ class HtmlParser(object):
                 self.readNode(currentNode)
                 continue
             else:
-                currentNode.children.append(HtmlNode(self.currentToken.type, self.currentToken.literal))
+                if self.currentToken.type == TokenType.CODE:
+                    currentNode.children.append(HtmlNode(self.currentToken.type, self.currentToken.literal.replace("\t", " " * 4)))
+                else:
+                    currentNode.children.append(HtmlNode(self.currentToken.type, self.currentToken.literal))
             self.advance()
         self.advance()
 
