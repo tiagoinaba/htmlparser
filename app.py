@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import INSERT, Text, font
+from tkinter import INSERT, font
 from tkinter.constants import CENTER
 from typing import Dict, Literal
 
