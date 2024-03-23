@@ -57,7 +57,7 @@ class App(object):
         self.t.tag_configure("<h3>", font=self.fonts["h3"])
         self.t.tag_configure("<p>", font=self.fonts["p"], spacing2=0)
         self.t.tag_configure("ROOT", font=self.fonts["p"], spacing2=0)
-        self.t.tag_configure("<code>", font=self.fonts["code"], background="#D9D9C1", lmargin1=50)
+        self.t.tag_configure("<code>", font=self.fonts["code"], background="#D9D9C1", lmargin1=50, spacing1=0, spacing2=5, spacing3=0)
 
         self.t.pack(side="top", fill="both", expand=True)
         self.root.update_idletasks()
