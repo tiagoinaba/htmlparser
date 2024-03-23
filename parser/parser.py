@@ -1,8 +1,8 @@
 from __future__ import annotations
 from typing import List
-from tknotes.tokenizer.tokens import TokenType, tokDict, Token, closingTags
-from tknotes.parser.prop import Prop
-from tknotes.errors.parser_error import ExpectedValueError
+from htmlparser.tokenizer.tokens import TokenType, tokDict, Token, closingTags
+from htmlparser.parser.prop import Prop
+from htmlparser.errors.parser_error import ExpectedValueError
 
 class HtmlNode(object):
     type: TokenType
@@ -75,7 +75,10 @@ class HtmlParser(object):
                 self.readNode(currentNode)
                 continue
             else:
-                currentNode.children.append(HtmlNode(self.currentToken.type, self.currentToken.literal))
+                if self.currentToken.type == TokenType.CODE:
+                    currentNode.children.append(HtmlNode(self.currentToken.type, self.currentToken.literal.replace("\t", " " * 4)))
+                else:
+                    currentNode.children.append(HtmlNode(self.currentToken.type, self.currentToken.literal))
             self.advance()
         self.advance()
 

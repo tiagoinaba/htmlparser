@@ -1,5 +1,5 @@
-from tknotes.tokenizer.tokens import TokenType, getTokenType, Token
-from tknotes.errors.errors import UnclosedAngledBracket, UnexpectedCharError
+from htmlparser.tokenizer.tokens import TokenType, getTokenType, Token
+from htmlparser.errors.errors import UnclosedAngledBracket, UnexpectedCharError
 from typing import List
 
 class HtmlTokenizer(object):
@@ -9,6 +9,7 @@ class HtmlTokenizer(object):
     nextIndex: int
     inBrackets: bool
     tokens: List[Token]
+    shouldEatWhitespace: bool
 
     def __init__(self, source: str) -> None:
         self.source = source.strip()
@@ -17,6 +18,7 @@ class HtmlTokenizer(object):
         self.tokens = []
         self.inBrackets = False
         self.advance()
+        self.shouldEatWhitespace = True
 
     def readTokens(self) -> List[Token]:
         while self.char != '':
@@ -33,18 +35,22 @@ class HtmlTokenizer(object):
 
     def readToken(self) -> Token:
         tok = None
-        match self.char:
-            case "\n" | "\t":
+        match (self.char, self.shouldEatWhitespace):
+            case ("\n" | "\t", True):
                 self.eatWhitespace()
                 tok = self.readToken()
-            case "<":
+            case ("<", _):
                 if self.peek() in ("\n", "\t", " "):
                     self.advance()
                     self.eatWhitespace()
                     self.retreat()
                 self.inBrackets = True
                 tok = self.readTag()
-            case _:
+                if tok.type == TokenType.CODE:
+                    self.shouldEatWhitespace = False
+                elif tok.type == TokenType.CODEC:
+                    self.shouldEatWhitespace = True
+            case (_, _):
                 if self.inBrackets:
                     if self.char == ' ':
                         self.eatWhitespace()
@@ -96,7 +102,7 @@ class HtmlTokenizer(object):
             start = self.currentIndex
         while self.char != '<' and self.char != '':
             self.advance()
-            if self.char in ("\n", "\t"):
+            if self.shouldEatWhitespace and self.char in ("\n", "\t"):
                 end = self.currentIndex
                 self.eatWhitespace()
                 return Token(TokenType.STRING, self.source[start:end] + " ")

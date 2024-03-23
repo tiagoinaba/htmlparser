@@ -1,13 +1,13 @@
 import sys
-
-from tknotes.errors.errors import UnexpectedCharError
 sys.path.append("/home/tkinaba/Documents/Github/py/tknotes")
 import unittest
 
-from tknotes.tokenizer import tokens
-from tknotes.tokenizer import htmltokenizer
+from htmlparser.errors.errors import UnexpectedCharError
 
-class ParserTests(unittest.TestCase):
+from htmlparser.tokenizer import tokens
+from htmlparser.tokenizer import htmltokenizer
+
+class TokenizerTests(unittest.TestCase):
     def test_single_char_id(self):
         h = htmltokenizer.HtmlTokenizer(source="<h>")
         toks = h.readTokens()
@@ -102,5 +102,24 @@ class ParserTests(unittest.TestCase):
         shouldBe.append(tokens.Token(tokens.TokenType.VALUE, "\"white\""))
         shouldBe.append(tokens.Token(tokens.TokenType.STRING, "tesstetete"))
         shouldBe.append(tokens.Token(tokens.TokenType.H1C, "</h1>"))
+        shouldBe.append(tokens.Token(tokens.TokenType.EOF, ""))
+        self.assertListEqual(toks, shouldBe)
+
+    def test_code(self):
+        h = htmltokenizer.HtmlTokenizer(source="""
+<code>
+    def teste(param):
+        print("hello world")
+</code>
+                                        """)
+        toks = h.readTokens()
+        shouldBe = list()
+        shouldBe.append(tokens.Token(tokens.TokenType.CODE, "<code>"))
+        shouldBe.append(tokens.Token(tokens.TokenType.STRING, \
+"""
+    def teste(param):
+        print("hello world")
+"""))
+        shouldBe.append(tokens.Token(tokens.TokenType.CODEC, "</code>"))
         shouldBe.append(tokens.Token(tokens.TokenType.EOF, ""))
         self.assertListEqual(toks, shouldBe)

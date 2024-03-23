@@ -1,11 +1,11 @@
 import unittest
 
-from tknotes.tokenizer.htmltokenizer import HtmlTokenizer
-from tknotes.tokenizer.htmltokenizer import TokenType
-from tknotes.parser.htmlparser import HtmlNode, HtmlParser
-from tknotes.parser.prop import Prop
+from htmlparser.tokenizer.htmltokenizer import HtmlTokenizer
+from htmlparser.tokenizer.htmltokenizer import TokenType
+from htmlparser.parser.parser import HtmlNode, HtmlParser
+from htmlparser.parser.prop import Prop
 
-from tknotes.errors.parser_error import UnknownPropError
+from htmlparser.errors.parser_error import UnknownPropError
 
 class ParserTests(unittest.TestCase):
     def test_hello_world(self):
@@ -87,3 +87,22 @@ class ParserTests(unittest.TestCase):
         toks = h.readTokens()
         p = HtmlParser(toks)
         self.assertRaises(UnknownPropError, p.buildTree)
+
+    def test_code_tag(self):
+        h = HtmlTokenizer(source="""
+<code>
+    def teste(param):
+        print("hello world")
+</code>
+                                        """)
+        toks = h.readTokens()
+        p = HtmlParser(toks)
+        tree = p.buildTree()
+        shouldBe = HtmlNode(TokenType.ROOT)
+        code = HtmlNode(TokenType.CODE, "<code>")
+        code.children.append(HtmlNode(TokenType.STRING, """
+    def teste(param):
+        print("hello world")
+"""))
+        shouldBe.children.append(code)
+        self.assertEqual(tree, shouldBe)
