@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import END, INSERT, font
+from tkinter import INSERT, Text, font
 from tkinter.constants import CENTER
 from typing import Dict, Literal
 
@@ -49,13 +49,14 @@ class App(object):
 
         self.main_frame = ScrollingFrame(self.root)
         self.t = DynamicText(self.main_frame, cursor="arrow", wrap='word', \
-                    borderwidth=0, highlightthickness=0, background="white", padx=30, pady=30, height=4)
+                    borderwidth=0, highlightthickness=0, background="white", padx=30, pady=30)
 
         self.t.tag_configure("pad", font=self.fonts["h1"])
         self.t.tag_configure("<h1>", font=self.fonts["h1"], justify=CENTER)
         self.t.tag_configure("<h2>", font=self.fonts["h2"])
         self.t.tag_configure("<h3>", font=self.fonts["h3"])
-        self.t.tag_configure("<p>", font=self.fonts["p"])
+        self.t.tag_configure("<p>", font=self.fonts["p"], spacing2=0)
+        self.t.tag_configure("ROOT", font=self.fonts["p"], spacing2=0)
         self.t.tag_configure("<code>", font=self.fonts["code"], background="#D9D9C1", lmargin1=50)
 
         self.t.pack(side="top", fill="both", expand=True)
@@ -80,8 +81,7 @@ class App(object):
             tags.append(tag)
         for node in parent.children:
             if node.type == TokenType.STRING:
-                tags.append(tokDict[parent.type])
+                tags.append(tokDict.get(parent.type, "<p>"))
                 self.t.insert(INSERT, node.innerText + '\n', tags)
-                self.t.insert(INSERT, '\n', ["pad"])
             else:
                 self.readTree(node, list(tags))
